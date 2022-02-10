@@ -34,7 +34,7 @@ public interface LikedService {
     Page<UserLike> getLikedListByLikedUserId(String likedUserId, Pageable pageable);
 
     /**
-     * 좋아요를 누른 사람의 아이디를 기준으로 좋아요 목록 조
+     * 좋아요를 누른 사람의 아이디를 기준으로 좋아요 목록 조회
      * @param likedPostId
      * @param pageable
      * @return
@@ -42,7 +42,7 @@ public interface LikedService {
     Page<UserLike> getLikedListByLikedPostId(String likedPostId, Pageable pageable);
 
     /**
-     * like, like person id로 같은 기록이 있는지 조
+     * like, like person id로 같은 기록이 있는지 조회
      * @param likedUserId
      * @param likedPostId
      * @return
