@@ -68,6 +68,7 @@ public class RedisServiceImpl implements RedisService {
             String key = (String)entry.getKey();
 
             log.info("Currnet Key : {}", key);
+            log.info("Current Val : {}", entry.getValue());
         }
 
         return null;

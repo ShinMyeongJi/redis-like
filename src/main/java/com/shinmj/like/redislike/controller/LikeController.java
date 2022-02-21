@@ -38,9 +38,6 @@ public class LikeController {
         @PathVariable String postId,
         @PathVariable String userId
     ) {
-        /*ValueOperations vop = redisTemplate.opsForValue();
-        vop.set(postId + userId, 1 + "");*/
-
         redisService.saveLiked2Redis(userId, postId);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
