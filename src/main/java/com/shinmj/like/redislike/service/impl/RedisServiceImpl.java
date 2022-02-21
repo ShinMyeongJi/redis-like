@@ -25,15 +25,11 @@ public class RedisServiceImpl implements RedisService {
     @Autowired
     RedisTemplate redisTemplate;
 
-    @Autowired
-    LikedService likedService;
-
-
     @Override
     public void saveLiked2Redis(String likedUserId, String likedPostId) {
         String key = RedisKeyUtils.getLikedKey(likedUserId, likedPostId);
-        redisTemplate.opsForSet().add(RedisKeyUtils.MAP_KEY_USER_LIKED, key, LikedStatusEnum.LIKE.getCode());
-       // redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_LIKED, key, LikedStatusEnum.LIKE.getCode());
+        //redisTemplate.opsForSet().add(likedPostId, likedUserId);
+        redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_LIKED, key, LikedStatusEnum.LIKE.getCode());
     }
 
     @Override
@@ -47,7 +43,7 @@ public class RedisServiceImpl implements RedisService {
     public void deleteLikedFromRedis(String likedUserId, String likedPostId) {
         String key = RedisKeyUtils.getLikedKey(likedUserId, likedPostId);
 
-        redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_LIKED, key);
+        redisTemplate.opsForSet().remove(RedisKeyUtils.MAP_KEY_USER_LIKED, key);
     }
 
     @Override
@@ -56,13 +52,24 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public void decrementLiedCount(String likedUserId) {
+    public void decrementLikedCount(String likedUserId) {
         redisTemplate.opsForHash().increment(RedisKeyUtils.MAP_KEY_USER_LIKED_COUNT, likedUserId, -1);
     }
 
     @Override
     public List<UserLike> getLikedDataFromRedis() {
         Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MAP_KEY_USER_LIKED, ScanOptions.NONE);
+
+        List<UserLike> list = new ArrayList<>();
+
+        while(cursor.hasNext()) {
+            Map.Entry<Object, Object> entry = cursor.next();
+
+            String key = (String)entry.getKey();
+
+            log.info("Currnet Key : {}", key);
+        }
+
         return null;
     }
 

@@ -39,7 +39,7 @@ public interface RedisService {
      * The number of likes of the user minus 1
      * @param likedUserId
      */
-    void decrementLiedCount(String likedUserId);
+    void decrementLikedCount(String likedUserId);
 
     /**
      * Get all the like data stored in Redis

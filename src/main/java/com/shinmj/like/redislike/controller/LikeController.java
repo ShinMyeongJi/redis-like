@@ -1,5 +1,7 @@
 package com.shinmj.like.redislike.controller;
 
+import com.shinmj.like.redislike.service.LikedService;
+import com.shinmj.like.redislike.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -24,6 +26,9 @@ public class LikeController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private RedisService redisService;
+
     @RequestMapping(
             value = POST_ID + USER_ID,
             method = RequestMethod.POST,
@@ -33,10 +38,35 @@ public class LikeController {
         @PathVariable String postId,
         @PathVariable String userId
     ) {
-        ValueOperations vop = redisTemplate.opsForValue();
-        vop.set(postId + userId, 1 + "");
+        /*ValueOperations vop = redisTemplate.opsForValue();
+        vop.set(postId + userId, 1 + "");*/
+
+        redisService.saveLiked2Redis(userId, postId);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+
+    @RequestMapping(
+            value = POST_ID + USER_ID,
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> cancleLike(
+            @PathVariable String postId,
+            @PathVariable String userId
+    ) {
+       redisService.deleteLikedFromRedis(userId, postId);
+       return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> getLikedData() {
+        redisService.getLikedDataFromRedis();
+        return null;
     }
 
 
