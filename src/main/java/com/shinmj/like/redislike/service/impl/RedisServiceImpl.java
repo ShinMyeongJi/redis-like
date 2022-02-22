@@ -35,15 +35,14 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void unlikeFromRedis(String likedUserId, String likedPostId) {
         String key = RedisKeyUtils.getLikedKey(likedUserId, likedPostId);
-
         redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_LIKED, key, LikedStatusEnum.UNLIKE.getCode());
+
     }
 
     @Override
     public void deleteLikedFromRedis(String likedUserId, String likedPostId) {
         String key = RedisKeyUtils.getLikedKey(likedUserId, likedPostId);
-
-        redisTemplate.opsForSet().remove(RedisKeyUtils.MAP_KEY_USER_LIKED, key);
+        redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_LIKED, key);
     }
 
     @Override
@@ -65,13 +64,16 @@ public class RedisServiceImpl implements RedisService {
         while(cursor.hasNext()) {
             Map.Entry<Object, Object> entry = cursor.next();
 
-            String key = (String)entry.getKey();
+            String key[] = ((String)entry.getKey()).split(RedisKeyUtils.KEY_JOIN);
 
-            log.info("Currnet Key : {}", key);
-            log.info("Current Val : {}", entry.getValue());
+            list.add(UserLike.builder()
+                    .likedUserId(key[0])
+                    .likedPostId(key[1])
+                    .status((Integer)entry.getValue())
+                    .build()
+            );
         }
-
-        return null;
+        return list;
     }
 
     @Override

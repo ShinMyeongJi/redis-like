@@ -1,5 +1,7 @@
 package com.shinmj.like.redislike.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shinmj.like.redislike.service.LikedService;
 import com.shinmj.like.redislike.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +25,16 @@ public class LikeController {
     public static final String USER_ID = "/{userId}";
     public static final String POST_ID = "/{postId}";
 
-    @Autowired
-    private RedisTemplate redisTemplate;
 
     @Autowired
     private RedisService redisService;
 
+    /**
+     * 좋아요 추가 (게시물 + 좋아요한 사용자 ID)
+     * @param postId
+     * @param userId
+     * @return
+     */
     @RequestMapping(
             value = POST_ID + USER_ID,
             method = RequestMethod.POST,
@@ -39,17 +45,21 @@ public class LikeController {
         @PathVariable String userId
     ) {
         redisService.saveLiked2Redis(userId, postId);
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
+    /**
+     * 좋아요 취소 (게시물 + 취소한 사용자 ID)
+     * @param postId
+     * @param userId
+     * @return
+     */
     @RequestMapping(
             value = POST_ID + USER_ID,
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> cancleLike(
+    public ResponseEntity<?> cancelLike(
             @PathVariable String postId,
             @PathVariable String userId
     ) {
@@ -57,12 +67,25 @@ public class LikeController {
        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    /**
+     * 좋아요 목록 가져오기
+     * @return
+     * @throws JsonProcessingException
+     */
     @RequestMapping(
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> getLikedData() {
-        redisService.getLikedDataFromRedis();
+    public ResponseEntity<?> getLikedData() throws JsonProcessingException {
+
+        return ResponseEntity.ok().body(new ObjectMapper().writeValueAsString(redisService.getLikedDataFromRedis()));
+    }
+
+    @RequestMapping(
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> transLikedFromRedis2DB() {
         return null;
     }
 
