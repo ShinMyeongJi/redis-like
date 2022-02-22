@@ -34,37 +34,19 @@ public class RedisConfig {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(Integer.parseInt(port));
-//        redisStandaloneConfiguration.setPassword();
+        //redisStandaloneConfiguration.setPassword();
 
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
 
         return lettuceConnectionFactory;
     }
-/*
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-        return redisTemplate;
-
-    }*/
 
 
     @Bean
-
     @ConditionalOnMissingBean(name = "redisTemplate")
-
     public RedisTemplate<String, Object> redisTemplate() throws UnknownHostException {
 
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
-       // ObjectMapper om = new ObjectMapper();
-      //  om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-      //  om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-      //  jackson2JsonRedisSerializer.setObjectMapper(om);
 
         RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
         template.setConnectionFactory(redisConnectionFactory());
@@ -73,26 +55,16 @@ public class RedisConfig {
         template.setHashKeySerializer(jackson2JsonRedisSerializer);
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
         template.afterPropertiesSet();
-        return template;
 
+        return template;
     }
 
 
-
     @Bean
-
     @ConditionalOnMissingBean(StringRedisTemplate.class)
-
-    public StringRedisTemplate stringRedisTemplate(
-
-            RedisConnectionFactory redisConnectionFactory)
-
-            throws UnknownHostException {
-
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) throws UnknownHostException {
         StringRedisTemplate template = new StringRedisTemplate();
-
         template.setConnectionFactory(redisConnectionFactory);
-
         return template;
 
     }

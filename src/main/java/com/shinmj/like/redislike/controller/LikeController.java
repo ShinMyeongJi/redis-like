@@ -22,12 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class LikeController {
 
     public static final String LIKE = "/like";
+    public static final String TRANS_DB = "/trans";
     public static final String USER_ID = "/{userId}";
     public static final String POST_ID = "/{postId}";
 
 
     @Autowired
     private RedisService redisService;
+
+
+    @Autowired
+    private LikedService likedService;
 
     /**
      * 좋아요 추가 (게시물 + 좋아요한 사용자 ID)
@@ -81,12 +86,19 @@ public class LikeController {
         return ResponseEntity.ok().body(new ObjectMapper().writeValueAsString(redisService.getLikedDataFromRedis()));
     }
 
+
+    /**
+     * 좋아요 정보 Redis -> DB 전송
+     * @return
+     */
     @RequestMapping(
+            value = TRANS_DB,
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> transLikedFromRedis2DB() {
-        return null;
+        likedService.transLikedFromRedis2DB();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

@@ -27,6 +27,4 @@ public class UserLike {
 
     @NonNull
     private Integer status = LikedStatusEnum.UNLIKE.getCode();
-
-
 }
