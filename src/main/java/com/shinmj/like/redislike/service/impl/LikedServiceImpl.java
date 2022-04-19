@@ -47,7 +47,7 @@ public class LikedServiceImpl implements LikedService {
     }
 
     @Override
-    public void transLikedFromRedis2DB() {
+    public List<UserLike> transLikedFromRedis2DB() {
         List<UserLike> list = redisService.getLikedDataFromRedis();
 
         for (UserLike ul : list) {
@@ -60,6 +60,8 @@ public class LikedServiceImpl implements LikedService {
                 save(ul);
             }
         }
+
+        return list;
     }
 
     @Override

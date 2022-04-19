@@ -2,6 +2,7 @@ package com.shinmj.like.redislike.service;
 
 import com.shinmj.like.redislike.domain.LikedCountDTO;
 import com.shinmj.like.redislike.domain.UserLike;
+import com.shinmj.like.redislike.domain.response.liked.UserLikeResponse;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface RedisService {
      * @param likedUserId
      * @param likedPostId
      */
-    void saveLiked2Redis(String likedUserId, String likedPostId);
+    UserLikeResponse saveLiked2Redis(String likedUserId, String likedPostId);
 
     /**
      * Cancel the like. Change state to 0
@@ -27,7 +28,7 @@ public interface RedisService {
      * @param likedUserId
      * @param likedPostId
      */
-    void deleteLikedFromRedis(String likedUserId, String likedPostId);
+    UserLikeResponse deleteLikedFromRedis(String likedUserId, String likedPostId);
 
     /**
      * The user's likes plus 1

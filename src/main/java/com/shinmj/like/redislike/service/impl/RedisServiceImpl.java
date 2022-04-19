@@ -3,13 +3,12 @@ package com.shinmj.like.redislike.service.impl;
 import com.shinmj.like.redislike.domain.LikedCountDTO;
 import com.shinmj.like.redislike.domain.LikedStatusEnum;
 import com.shinmj.like.redislike.domain.UserLike;
-import com.shinmj.like.redislike.service.LikedService;
+import com.shinmj.like.redislike.domain.response.liked.UserLikeResponse;
 import com.shinmj.like.redislike.service.RedisService;
 import com.shinmj.like.redislike.utils.RedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisKeyExpiredEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
@@ -25,11 +24,17 @@ public class RedisServiceImpl implements RedisService {
     @Autowired
     RedisTemplate redisTemplate;
 
+
+    // 응답 Response 작성 1차 시도
     @Override
-    public void saveLiked2Redis(String likedUserId, String likedPostId) {
+    public UserLikeResponse saveLiked2Redis(String likedUserId, String likedPostId) {
         String key = RedisKeyUtils.getLikedKey(likedUserId, likedPostId);
-        //redisTemplate.opsForSet().add(likedPostId, likedUserId);
         redisTemplate.opsForHash().put(RedisKeyUtils.MAP_KEY_USER_LIKED, key, LikedStatusEnum.LIKE.getCode());
+
+        return UserLikeResponse.builder()
+                .likedPostId(likedPostId)
+                .likedUserId(likedUserId)
+                .status(LikedStatusEnum.LIKE.getCode()).build();
     }
 
     @Override
@@ -40,9 +45,17 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public void deleteLikedFromRedis(String likedUserId, String likedPostId) {
+    public UserLikeResponse deleteLikedFromRedis(String likedUserId, String likedPostId) {
         String key = RedisKeyUtils.getLikedKey(likedUserId, likedPostId);
-        redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_LIKED, key);
+
+        long res = redisTemplate.opsForHash().delete(RedisKeyUtils.MAP_KEY_USER_LIKED, key);
+
+        if (res == 1) return UserLikeResponse.builder()
+                .likedPostId(likedPostId)
+                .likedUserId(likedUserId)
+                .status(LikedStatusEnum.LIKE.getCode()).build();
+
+        else return null;
     }
 
     @Override

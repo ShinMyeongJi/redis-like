@@ -52,7 +52,7 @@ public interface LikedService {
     /**
      * Store the like data in Redis into the database
      */
-    void transLikedFromRedis2DB();
+    List<UserLike> transLikedFromRedis2DB();
 
     /**
      * Store the number of likes in Redis into the database

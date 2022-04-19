@@ -1,3 +1,12 @@
+public class RestControllerBase {
+
+}
+
+
+
+
+
+
 /*
 package kr.co.pcninc.solutions.mask.core.api.controller;
 
