@@ -46,23 +46,8 @@ public class LikeController {
      * @param userId
      * @return
      */
-    /*@RequestMapping(
-            value = POST_ID + USER_ID,
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<?> createLike(
-        @PathVariable String postId,
-        @PathVariable String userId
-    ) {
-        redisService.saveLiked2Redis(userId, postId);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }*/
-    @RequestMapping(
-            value = POST_ID + USER_ID,
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    
+    @PostMapping(value = POST_ID + USER_ID)
     public ResponseEntity<? extends BasicResponse> createLike(
             @PathVariable String postId,
             @PathVariable String userId
@@ -85,11 +70,7 @@ public class LikeController {
      * @param userId
      * @return
      */
-    @RequestMapping(
-            value = POST_ID + USER_ID,
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @DeleteMapping(value = POST_ID + USER_ID)
     public ResponseEntity<?> cancelLike(
             @PathVariable String postId,
             @PathVariable String userId
@@ -107,10 +88,7 @@ public class LikeController {
      * @return
      * @throws JsonProcessingException
      */
-    @RequestMapping(
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = POST_ID + USER_ID)
     public ResponseEntity<?> getLikedData() throws JsonProcessingException {
         List<UserLike> userLikeList = redisService.getLikedDataFromRedis();
 
@@ -126,11 +104,7 @@ public class LikeController {
      * 좋아요 정보 Redis -> DB 전송
      * @return
      */
-    @RequestMapping(
-            value = TRANS_DB,
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(value = TRANS_DB)
     public ResponseEntity<?> transLikedFromRedis2DB() {
         List<UserLike> userLikeList = likedService.transLikedFromRedis2DB();
 
